@@ -23,4 +23,23 @@ class Task < Post
 
     return [deadline, @text, time_string]
   end
+
+  def to_db_hash
+    return super.merge(
+      {
+        text: @text,
+        due_date: @due_date.to_s
+      }
+    )
+  end
+
+  def load_data(data_hash)
+    # Сперва дергаем родительский метод load_data для общих полей. Обратите
+    # внимание, что вызов без параметров тут эквивалентен super(data_hash), так
+    # как те же параметры будут переданы методу super автоматически.
+    super
+
+    # Теперь достаем из хэша специфичное только для задачи значение due_date
+    @due_date = Date.parse(data_hash['due_date'])
+  end
 end
